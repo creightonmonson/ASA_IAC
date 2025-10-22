@@ -1,0 +1,22 @@
+---
+# Apply ASA configuration lines using cisco.asa collection modules
+- name: Ping ASA device
+  ansible.netcommon.net_ping:
+  register: ping_result
+
+- name: Fail if ASA unreachable
+  fail:
+    msg: "ASA {{ inventory_hostname }} is unreachable"
+  when: ping_result.ping is not defined or ping_result.ping != 'pong'
+
+- name: Configure ASA (lines)
+  cisco.asa.asa_config:
+    lines: "{{ asa_config_lines }}"
+    save: yes
+    backup: yes
+  when: asa_config_lines is defined
+  register: asa_result
+
+- name: Show ASA result
+  debug:
+    var: asa_result

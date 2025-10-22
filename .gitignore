@@ -1,0 +1,12 @@
+# temp files
+/tmp/
+tmp/
+
+# Ansible
+*.retry
+
+# Python
+__pycache__/
+/.vscode
+/tmp/
+*.retry

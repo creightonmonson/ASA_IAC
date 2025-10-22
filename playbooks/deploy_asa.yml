@@ -1,0 +1,10 @@
+---
+- name: Deploy ASA configuration
+  hosts: firewalls
+  gather_facts: false
+  connection: network_cli
+  collections:
+    - cisco.asa
+    - ansible.netcommon
+  roles:
+    - role: asa

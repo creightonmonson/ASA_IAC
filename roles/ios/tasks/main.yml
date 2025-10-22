@@ -1,0 +1,22 @@
+---
+# Apply IOS configuration lines using cisco.ios collection modules
+- name: Ping IOS device
+  ansible.netcommon.net_ping:
+  register: ping_result
+
+- name: Fail if router unreachable
+  fail:
+    msg: "Router {{ inventory_hostname }} is unreachable"
+  when: ping_result.ping is not defined or ping_result.ping != 'pong'
+
+- name: Configure IOS (lines)
+  cisco.ios.ios_config:
+    lines: "{{ ios_config_lines }}"
+    save: yes
+    backup: yes
+  when: ios_config_lines is defined
+  register: ios_result
+
+- name: Show IOS result
+  debug:
+    var: ios_result

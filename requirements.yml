@@ -1,0 +1,6 @@
+- src: cisco.asa
+  type: collection
+- src: cisco.ios
+  type: collection
+- src: ansible.netcommon
+  type: collection
