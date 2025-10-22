@@ -16,4 +16,5 @@
 
   roles:
     - asa_interfaces
+    - asa_static_routes
   
