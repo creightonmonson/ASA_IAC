@@ -1,0 +1,20 @@
+---
+l3_interfaces:
+  - interface_type: Ethernet
+    interface_id: 0/1
+    description: L3 Link to ASA_01
+    ip_address: 198.16.0.2
+    prefix: 24
+  - interface_type: Ethernet
+    interface_id: 0/2
+    description: L3 Link to ASA_02
+    ip_address: 200.1.1.2
+    prefix: 24
+
+static_routes:
+  - routed_interface: Ethernet0/1
+    next_hop_ip: 192.168.16.1
+    dest_prefix: 10.10.10.0/23
+  - routed_interface: Ethernet0/2
+    next_hop_ip: 200.1.1.1
+    dest_prefix: 172.16.0.0/22

@@ -1,0 +1,17 @@
+---
+- name: Render and push interface configuration
+  tags: interface
+  cisco.asa.asa_config:
+    src: "templates/asa_interfaces.j2"
+  
+  # This notifies the handler to save the config, but only
+  # if the 'asa_config' task reports a change.
+  notify: save_asa_config
+
+  handlers:
+  - name: save_asa_config
+    listen: "save_asa_config"
+    # Using 'asa_command' is safer than 'cli_command'
+    cisco.asa.asa_command:
+      commands:
+        - "write memory"

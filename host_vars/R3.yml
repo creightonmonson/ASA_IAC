@@ -1,0 +1,17 @@
+---
+l3_interfaces:
+  - interface_type: Ethernet
+    interface_id: 0/1
+    description: L3 Link to ASA_02
+    ip_address: 172.16.1.2
+    prefix: 24
+  - interface_type: Loopback
+    interface_id: 0
+    description: Loopback to simulate user LAN
+    ip_address: 172.16.2.1
+    prefix: 24
+
+static_routes:
+  - routed_interface: Ethernet0/1
+    next_hop_ip: 172.16.1.1
+    dest_prefix: 0.0.0.0/0

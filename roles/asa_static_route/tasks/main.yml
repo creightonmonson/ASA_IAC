@@ -1,0 +1,14 @@
+---
+- name: Render and push static route configuration
+  tags: routing
+  cisco.asa.asa_config:
+    src: "templates/asa_routes.j2"
+  notify: save_asa_config
+
+  handlers:
+  - name: save_asa_config
+    listen: "save_asa_config"
+    # Using 'asa_command' is safer than 'cli_command'
+    cisco.asa.asa_command:
+      commands:
+        - "write memory"

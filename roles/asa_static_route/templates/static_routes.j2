@@ -1,0 +1,5 @@
+{% if asa_routes is defined %}
+{% for route in asa_routes %}
+route {{ route.interface }} {{ route.prefix }} {{ route.mask }} {{ route.next_hop }} {{ route.metric | default(1) }}
+{% endfor %}
+{% endif %}

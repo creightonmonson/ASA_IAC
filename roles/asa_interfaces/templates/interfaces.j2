@@ -1,0 +1,12 @@
+{% if asa_interfaces is defined %}
+{% for iface in asa_interfaces %}
+interface {{ iface.name }}
+{% if iface.description is defined %}
+  description {{ iface.description }}
+{% endif %}
+  nameif {{ iface.nameif }}
+  security-level {{ iface.security_level }}
+  ip address {{ iface.ip_address }} {{ iface.mask }}
+  no shutdown
+{% endfor %}
+{% endif %}

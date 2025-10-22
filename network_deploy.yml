@@ -1,0 +1,19 @@
+---
+### Configure routers L3 interfaces and static routes ###
+- name: Configure Network CORE
+  hosts: routers 
+  gather_facts: false
+  connection: network_cli
+
+  roles:
+    - ios_l3_interfaces
+    - ios_static_routes
+
+- name: Configure ASA from Template
+  hosts: firewalls
+  gather_facts: false
+  connection: network_cli
+
+  roles:
+    - asa_interfaces
+  
