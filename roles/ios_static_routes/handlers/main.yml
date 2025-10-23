@@ -1,0 +1,7 @@
+---
+# These handlers are specific to the 'ios_static_routes' role.
+
+- name: save_ios_config
+  listen: "save_ios_config"
+  cisco.ios.ios_config:
+    save_when: modified

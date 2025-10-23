@@ -1,6 +1,6 @@
 ---
 l3_interfaces:
-  - interface_type: Ethernet
+  - interface_type: GigabitEthernet
     interface_id: 0/1
     description: L3 Link to ASA_01
     ip_address: 10.10.10.2
@@ -12,6 +12,7 @@ l3_interfaces:
     prefix: 24
 
 static_routes:
-  - routed_interface: Ethernet0/1
-    next_hop_ip: 10.10.10.1
-    dest_prefix: 0.0.0.0/0
+  - dest: "0.0.0.0/0"
+    next_hops:
+      - forward_router_address: "10.10.10.1"
+        interface: "GigabitEthernet0/1"

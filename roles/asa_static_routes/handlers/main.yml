@@ -1,0 +1,9 @@
+---
+# These handlers are specific to the 'asa_static_routes' role.
+# They are only loaded when this role is executed.
+
+- name: save_asa_config
+  listen: "save_asa_config"
+  cisco.asa.asa_command:
+    commands:
+      - "write memory"

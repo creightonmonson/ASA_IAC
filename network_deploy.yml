@@ -1,6 +1,5 @@
 ---
-### Configure routers L3 interfaces and static routes ###
-- name: Configure Network CORE
+- name: Configure Routers Interface and Static Routes 
   hosts: routers 
   gather_facts: false
   connection: network_cli
@@ -17,4 +16,3 @@
   roles:
     - asa_interfaces
     - asa_static_routes
-  

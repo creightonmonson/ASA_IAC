@@ -1,14 +1,10 @@
 ---
-- name: Render and push static route configuration
-  tags: routing
-  cisco.asa.asa_config:
-    src: "templates/asa_routes.j2"
-  notify: save_asa_config
+- name: Render ASA routing configuration to file
+  ansible.builtin.template:
+    src: "templates/static_routes.j2"
+    dest: "{{ role_path }}/output/{{ inventory_hostname }}_routes.cfg"
 
-  handlers:
-  - name: save_asa_config
-    listen: "save_asa_config"
-    # Using 'asa_command' is safer than 'cli_command'
-    cisco.asa.asa_command:
-      commands:
-        - "write memory"
+- name: Push interface configuration to ASA
+  cisco.asa.asa_config:
+    src: "{{ role_path }}/output/{{ inventory_hostname }}_routes.cfg"
+  notify: save_asa_config

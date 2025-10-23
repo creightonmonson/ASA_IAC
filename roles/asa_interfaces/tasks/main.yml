@@ -1,17 +1,10 @@
 ---
-- name: Render and push interface configuration
-  tags: interface
-  cisco.asa.asa_config:
-    src: "templates/asa_interfaces.j2"
-  
-  # This notifies the handler to save the config, but only
-  # if the 'asa_config' task reports a change.
-  notify: save_asa_config
+- name: Render ASA interface configuration to file
+  ansible.builtin.template:
+    src: "templates/interfaces.j2"
+    dest: "{{ role_path }}/output/{{ inventory_hostname }}_interfaces.cfg"
 
-  handlers:
-  - name: save_asa_config
-    listen: "save_asa_config"
-    # Using 'asa_command' is safer than 'cli_command'
-    cisco.asa.asa_command:
-      commands:
-        - "write memory"
+- name: Push interface configuration to ASA
+  cisco.asa.asa_config:
+    src: "{{ role_path }}/output/{{ inventory_hostname }}_interfaces.cfg"
+  notify: save_asa_config
