@@ -1,13 +1,13 @@
 ---
 asa_interfaces:
-  - name: "GigabitEthernet0/1"
+  - name: "gigabitEthernet0/1"
     description: "Link to WAN - OUTSIDE"
     nameif: "outside"
     security_level: 0
     ip_address: "198.16.0.1"
     mask: "255.255.255.0"
   
-  - name: "GigabitEthernet0/2"
+  - name: "gigabitEthernet0/0"
     description: "Internal LAN - INSIDE"
     nameif: "inside"
     security_level: 100

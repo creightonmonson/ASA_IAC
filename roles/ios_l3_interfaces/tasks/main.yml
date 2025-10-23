@@ -15,3 +15,4 @@
       - name: "{{ item.interface_type }}{{ item.interface_id }}"
         ipv4:
           - address: "{{ item.ip_address }}/{{ item.prefix }}"
+  notify: save_ios_config

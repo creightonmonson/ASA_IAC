@@ -6,3 +6,4 @@ ansible_become: 'true'
 ansible_become_method: 'enable'
 ansible_become_password: 'cisco1@3'
 ansible_network_os: 'cisco.asa.asa'
+ansible_command_timeout: 60

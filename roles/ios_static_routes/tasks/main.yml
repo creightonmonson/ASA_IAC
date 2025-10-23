@@ -5,3 +5,4 @@
         - address_families:
           - afi: ipv4
             routes: "{{ static_routes }}"
+  notify: save_ios_config
