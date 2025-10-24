@@ -16,3 +16,4 @@
   roles:
     - asa_interfaces
     - asa_static_routes
+    - asa_ipsec_tunnels

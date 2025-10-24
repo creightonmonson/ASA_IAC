@@ -1,0 +1,50 @@
+{% if ipsec_tunnels is defined %}
+{% for tunnel in ipsec_tunnels %}
+!
+! --- Configuration for Peer {{ tunnel.peer_ip }} ---
+!
+! 1. Network Objects
+object network OBJ-{{ tunnel.local_lan_net }}
+  subnet {{ tunnel.local_lan_net }} {{ tunnel.local_lan_mask }}
+object network OBJ-{{ tunnel.remote_lan_net }}
+  subnet {{ tunnel.remote_lan_net }} {{ tunnel.remote_lan_mask }}
+!
+! 2. Interesting Traffic ACL
+access-list VPN-ACL-{{ tunnel.peer_ip }} extended permit ip object OBJ-{{ tunnel.local_lan_net }} object OBJ-{{ tunnel.remote_lan_net }}
+!
+! 3. NAT Exemption (No-NAT) - Placed at line 1
+nat (inside,outside) 1 source static OBJ-{{ tunnel.local_lan_net }} OBJ-{{ tunnel.local_lan_net }} destination static OBJ-{{ tunnel.remote_lan_net }} OBJ-{{ tunnel.remote_lan_net }} no-proxy-arp route-lookup
+!
+! 4. Phase 2 (IPSec Proposal)
+crypto ipsec ikev2 ipsec-proposal IKEV2-PROP-AES256-SHA
+  protocol esp encryption aes-256
+  protocol esp integrity sha-1
+!
+! 5. Phase 1 (IKEv2 Policy)
+crypto ikev2 policy 10
+  encryption aes-256
+  integrity sha
+  group 2
+  prf sha
+  lifetime seconds 86400
+crypto ikev2 enable outside
+!
+! 6. Tunnel Group (Peer IP and PSK)
+tunnel-group {{ tunnel.peer_ip }} type ipsec-l2l
+tunnel-group {{ tunnel.peer_ip }} ipsec-attributes
+  ikev2 remote-authentication pre-shared-key {{ tunnel.preshared_key }}
+  ikev2 local-authentication pre-shared-key {{ tunnel.preshared_key }}
+!
+! 7. Crypto Map
+crypto map VPN-MAP 1 match address VPN-ACL-{{ tunnel.peer_ip }}
+crypto map VPN-MAP 1 set peer {{ tunnel.peer_ip }}
+crypto map VPN-MAP 1 set ikev2 ipsec-proposal IKEV2-PROP-AES256-SHA
+!
+! 8. Apply Crypto Map and allow VPN traffic
+crypto map VPN-MAP interface outside
+sysopt connection permit-vpn
+!
+! --- End Configuration for Peer {{ tunnel.peer_ip }} ---
+!
+{% endfor %}
+{% endif %}

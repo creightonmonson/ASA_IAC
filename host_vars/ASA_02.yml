@@ -25,3 +25,11 @@ asa_routes:
     mask: "255.255.255.0"
     next_hop: "172.16.1.2"
     metric: 1
+
+ipsec_tunnels:
+  - local_lan_net: "172.16.2.0"
+    local_lan_mask: "255.255.255.0"
+    remote_lan_net: "10.10.11.0"
+    remote_lan_mask: "255.255.255.0"
+    peer_ip: "198.16.0.1" # ASA_01 Outside IP
+    preshared_key: "ThisIsAStrongSecretKey123"

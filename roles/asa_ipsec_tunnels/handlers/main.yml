@@ -1,0 +1,6 @@
+---
+- name: save_asa_config
+  listen: "save_asa_config"
+  cisco.asa.asa_command:
+    commands:
+      - "write memory"

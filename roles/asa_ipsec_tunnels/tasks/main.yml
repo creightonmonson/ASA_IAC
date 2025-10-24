@@ -1,0 +1,12 @@
+---
+- name: Render ASA IPSec configuration to file
+  ansible.builtin.template:
+    src: "templates/ipsec_tunnels.j2"
+    dest: "{{ role_path }}/output/{{ inventory_hostname }}_ipsec.cfg"
+  when: ipsec_tunnels is defined
+
+- name: Push IPSec configuration to ASA
+  cisco.asa.asa_config:
+    src: "{{ role_path }}/output/{{ inventory_hostname }}_ipsec.cfg"
+  when: ipsec_tunnels is defined
+  notify: save_asa_config
