@@ -1,59 +1,58 @@
-# ASA_IAC — Demo Ansible project for Cisco ASA & IOS
+# Ansible for Cisco ASA & IOS Automation (PoC)
 
-This repository is a small demo to show how to deploy simple configurations to Cisco ASA and IOS devices using Ansible collections (no Jinja templates).
+This repository serves as a proof of concept (PoC) for using Ansible as the automation engine in a mixed Cisco IOS and ASA environment.
 
-Quick start
+The project demonstrates a variable-driven approach to configuration management. All device-specific settings (like IP addresses and route definitions) are abstracted into `host_vars` files, while group-wide settings (like credentials and connection types) are stored in `group_vars`. This allows the Ansible roles and playbooks to remain generic.
 
-1. Install collections referenced in `requirements.yml`:
+## Core Functionality
 
-```bash
-ansible-galaxy collection install -r requirements.yml
-```
+This project's main playbook, `network_deploy.yml`, targets two groups of devices: `firewalls` (Cisco ASA) and `routers` (Cisco IOS).
 
-2. Ensure your `inventory.yml` contains the devices and that `host_vars/<hostname>/` overrides `asa_config_lines` / `ios_config_lines` as needed.
+* **For Cisco IOS Routers (`routers` group):**
+    * Configures L3 interfaces using `cisco.ios.ios_l3_interfaces`.
+    * Configures static routes using `cisco.ios.ios_static_routes`.
+    * Variables for these tasks are defined in `host_vars/R1.yml`, `R2.yml`, etc..
 
-3. Run the ASA playbook (dry-run):
+* **For Cisco ASA Firewalls (`firewalls` group):**
+    * Generates interface configurations from a Jinja2 template (`roles/asa_interfaces/templates/interfaces.j2`).
+    * Generates static route configurations from a Jinja2 template (`roles/asa_static_routes/templates/static_routes.j2`).
+    * Pushes the generated configurations to the devices using `cisco.asa.asa_config`.
+    * Variables are defined in `host_vars/ASA_01.yml` and `host_vars/ASA_02.yml`.
 
-```bash
-ansible-playbook playbooks/deploy_asa.yml --check
-```
+All tasks notify a handler to save the configuration upon a change.
 
-4. Run the IOS playbook (apply):
+## How to Use
 
-```bash
-ansible-playbook playbooks/deploy_ios.yml
-```
+1.  **Install Collections:**
+    Install the required Ansible collections using `requirements.yml`.
+    ```bash
+    ansible-galaxy collection install -r requirements.yml
+    ```
 
-Connectivity and credentials
+2.  **Edit Inventory:**
+    Update `inventory.yml` with the management IP addresses of your ASA and IOS devices.
 
-- This demo expects `connection: network_cli` and that credentials are provided via `ansible_user`/`ansible_password`/`ansible_ssh_common_args` in your inventory or via `--extra-vars` or Ansible Vault.
-- For lab usage, prefer `host_vars/<device>` for per-device config lines.
+3.  **Update Credentials:**
+    Modify `group_vars/firewalls.yml` and `group_vars/routers.yml` with the correct SSH and `enable` credentials for your environment.
 
-Notes for instructors
+4.  **Customize Variables:**
+    Review and edit the files in `host_vars/` to match your desired interface IPs, descriptions, and static routes.
 
-- The roles use `cisco.asa.asa_config` and `cisco.ios.ios_config` modules. They accept a `lines:` list which avoids Jinja templating and teaches line-based config.
-- Replace example lines in `roles/*/vars/main.yml` or better, put per-host lines under `host_vars/DEVICE.yml`.
-Ansible project to deploy Cisco ASA and IOS configurations
+5.  **Run (Dry-Run):**
+    Perform a dry-run using `--check` to see what changes would be made without applying them.
+    ```bash
+    ansible-playbook network_deploy.yml --check
+    ```
 
-Quick start
+6.  **Deploy:**
+    Run the playbook to apply the configuration.
+    ```bash
+    ansible-playbook network_deploy.yml
+    ```
 
-1. Install required collections:
+## Future Roadmap
 
-   ansible-galaxy collection install -r requirements.yml
+This PoC provides the foundation for network automation. Next steps for this project include:
 
-2. Edit `inventory.yml`, `host_vars/` or `group_vars/` to provide device IPs and credentials.
-
-3. Run a playbook in check mode:
-
-   ansible-playbook playbooks/deploy_ios.yml -C
-
-4. Run for real:
-
-   ansible-playbook playbooks/deploy_ios.yml
-
-Notes
-
-- Uses `network_cli` connection. Ensure SSH connectivity and that username/password/privilege are configured in host_vars.
-- Templates are in `roles/*/templates` and can be adapted.
-# ASA_IAC
-Demo for ASA Infrastructure as Code Framework using AWX 
+* Building out security zone specifics for the ASA firewalls (e.g., access-lists, object-groups).
+* Deploying site-to-site IPSec tunnels between the ASA devices.
